@@ -1,12 +1,18 @@
-// src/app/(home)/page.tsx
-import {HomeCarousel} from '@/components/shared/home/home-carousel';
-import axiosClient from '@/lib/axios';
+import React from 'react'
 
-export default async function Page() {
-    const res = await axiosClient.get('/api/v1/brands');
-    const brands = res.data;
+import Header from '@/components/shared/header'
+import Footer from '@/components/shared/footer'
 
-    console.log('Brands data:', brands);
-
-    return <HomeCarousel items={brands}/>;
+export default async function RootLayout({
+                                             children,
+                                         }: {
+    children: React.ReactNode
+}) {
+    return (
+        <div className='flex flex-col min-h-screen'>
+            <Header/>
+            <main className='flex-1 flex flex-col p-4'>{children}</main>
+            <Footer/>
+        </div>
+    )
 }
