@@ -8,8 +8,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { APP_NAME } from '@/lib/constants'
-const categories = ['men', 'women', 'kids', 'accessories']
+const categories = [
+  'cpu',
+  'gpu',
+  'motherboard',
+  'ram',
+  'storage',
+  'psu',
+  'case',
+  'cooling',
+]
 export default async function Search() {
   return (
     <form action='/search' method='GET' className='flex  items-stretch h-10 '>
@@ -28,15 +36,16 @@ export default async function Search() {
       </Select>
       <Input
         className='flex-1 rounded-none dark:border-gray-200 bg-gray-100 text-black text-base h-full'
-        placeholder={`Search Site ${APP_NAME}`}
+        placeholder={`Bạn tìm gì...`}
         name='q'
         type='search'
       />
       <button
         type='submit'
-        className='bg-primary text-primary-foreground text-black rounded-s-none rounded-e-md h-full px-3 py-2 '
+        className='bg-primary text-white rounded-s-none rounded-e-md h-full px-3 py-2 flex items-center gap-2'
       >
-        <SearchIcon className='w-6 h-6' />
+        <SearchIcon className='w-5 h-5' />
+        <span className='text-sm font-medium'>Tìm Kiếm</span>
       </button>
     </form>
   )
