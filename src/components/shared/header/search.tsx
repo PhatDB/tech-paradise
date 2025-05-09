@@ -1,52 +1,64 @@
-import { SearchIcon } from 'lucide-react'
-import { Input } from '@/components/ui/input'
+'use client';
 
+import {SearchIcon} from 'lucide-react';
+import {Input} from '@/components/ui/input';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
+
 const categories = [
-  'cpu',
-  'gpu',
-  'motherboard',
-  'ram',
-  'storage',
-  'psu',
-  'case',
-  'cooling',
-]
-export default async function Search() {
-  return (
-    <form action='/search' method='GET' className='flex  items-stretch h-10 '>
-      <Select name='category'>
-        <SelectTrigger className='w-auto !h-full dark:border-gray-200 bg-gray-100 text-black border-r  rounded-r-none rounded-l-md'>
-          <SelectValue placeholder='All' />
-        </SelectTrigger>
-        <SelectContent position='popper'>
-          <SelectItem value='all'>All</SelectItem>
-          {categories.map((category) => (
-            <SelectItem key={category} value={category}>
-              {category}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-      <Input
-        className='flex-1 rounded-none dark:border-gray-200 bg-gray-100 text-black text-base h-full'
-        placeholder={`Bạn tìm gì...`}
-        name='q'
-        type='search'
-      />
-      <button
-        type='submit'
-        className='bg-primary text-white rounded-s-none rounded-e-md h-full px-3 py-2 flex items-center gap-2'
-      >
-        <SearchIcon className='w-5 h-5' />
-        <span className='text-sm font-medium'>Tìm Kiếm</span>
-      </button>
-    </form>
-  )
+    'cpu',
+    'gpu',
+    'motherboard',
+    'ram',
+    'storage',
+    'psu',
+    'case',
+    'cooling',
+];
+
+export default function Search() {
+    return (
+        <form
+            action="/search"
+            method="GET"
+            className="flex items-stretch h-10 w-full max-w-full"
+        >
+            {/* Category select */}
+            <Select name="category">
+                <SelectTrigger
+                    className="w-auto !h-full dark:border-gray-200 bg-gray-100 text-black border-r  rounded-r-none rounded-l-md">
+                    <SelectValue placeholder="All"/>
+                </SelectTrigger>
+                <SelectContent position="popper">
+                    <SelectItem value="all">All</SelectItem>
+                    {categories.map((category) => (
+                        <SelectItem key={category} value={category}>
+                            {category}
+                        </SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
+            
+            <Input
+                type="search"
+                name="q"
+                placeholder="Bạn tìm gì..."
+                className="flex-1 rounded-none bg-gray-100 text-black text-base h-full dark:border-gray-300"
+            />
+
+            {/* Search button */}
+            <button
+                type="submit"
+                className="bg-primary text-white rounded-r-md rounded-l-none px-3 flex items-center gap-2 h-full"
+            >
+                <SearchIcon className="w-4 h-4"/>
+                <span className="text-sm font-medium hidden sm:inline">Tìm kiếm</span>
+            </button>
+        </form>
+    );
 }
