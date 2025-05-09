@@ -22,7 +22,6 @@ export default async function Page() {
 
                 <Card className="w-full rounded-none">
                     <CardContent className="p-4 items-center gap-3">
-                        {/* Thêm nội dung khác tại đây */}
                     </CardContent>
                 </Card>
             </div>

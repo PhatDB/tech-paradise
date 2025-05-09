@@ -55,5 +55,27 @@ export const bestSellerPCs: BestSellerPC[] = [
         rating: 5.0,
         reviewCount: 4,
         href: '/product/pc-13400f-4060'
+    },
+    {
+        image: '/images/pc/pc4.jpg',
+        name: 'PC GVN Intel i5-12400F/ VGA RX 6600',
+        specs: ['i5 12400F', 'RX 6600', 'B760', '8GB', '500GB'],
+        oldPrice: 17020000,
+        newPrice: 15490000,
+        discountPercent: 9,
+        rating: 0.0,
+        reviewCount: 0,
+        href: '/product/pc-12400f-rx6600'
+    },
+    {
+        image: '/images/pc/pc5.jpg',
+        name: 'PC GVN Intel i5-13400F/ VGA RTX 4060',
+        specs: ['i5 13400F', 'RTX 4060', 'B760', '16GB', '500GB'],
+        oldPrice: 19720000,
+        newPrice: 18390000,
+        discountPercent: 7,
+        rating: 5.0,
+        reviewCount: 4,
+        href: '/product/pc-13400f-4060'
     }
 ];
