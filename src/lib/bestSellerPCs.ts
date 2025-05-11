@@ -1,6 +1,6 @@
-import {BestSellerPC} from "@/types/bestSellerPC";
+import {Product} from "@/types/product";
 
-export const bestSellerPCs: BestSellerPC[] = [
+export const bestSellerPCs: Product[] = [
     {
         image: '/images/pc/pc1.jpg',
         name: 'PC GVN Dragon GODLIKE (Intel Core Ultra 9 285K/ RTX 5090)',

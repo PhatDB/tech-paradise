@@ -1,11 +1,11 @@
 import {APP_NAME} from '@/lib/constants';
 import Image from 'next/image';
 import Link from 'next/link';
-import Menu from './menu';
-import {Button} from '@/components/ui/button';
+import Menu from './Menu';
+import {Button} from '@/components/ui/Button';
 import {MenuIcon} from 'lucide-react';
 import data from '@/lib/data';
-import Search from './search';
+import Search from './Search';
 
 export default function Header() {
     return (
@@ -35,7 +35,7 @@ export default function Header() {
                     className="header-button flex items-center gap-1 text-base [&_svg]:size-5 min-w-fit"
                 >
                     <MenuIcon/>
-                    All
+                    Danh mục
                 </Button>
                 {data.headerMenus.map((menu) => (
                     <Link

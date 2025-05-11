@@ -1,9 +1,13 @@
 import axios, {AxiosError, InternalAxiosRequestConfig} from 'axios';
+import https from 'https';
+
+const agent = new https.Agent({rejectUnauthorized: false});
 
 // Axios instance
 const axiosClient = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_APP_BASE_URL,
-    timeout: 10000,
+    baseURL: process.env.API_BASE_URL || 'https://localhost:5000',
+    timeout: 5000,
+    httpsAgent: agent,
     headers: {
         'Content-Type': 'application/json',
     },

@@ -1,7 +1,6 @@
 import React from 'react'
-
-import Header from '@/components/shared/header'
-import Footer from '@/components/shared/footer'
+import Footer from '@/components/shared/Footer'
+import Header from '@/components/shared/header/Index'
 
 export default async function RootLayout({children,}: { children: React.ReactNode }) {
     return (

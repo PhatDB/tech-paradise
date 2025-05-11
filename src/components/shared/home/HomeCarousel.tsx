@@ -9,7 +9,7 @@ import {
     CarouselItem,
     CarouselNext,
     CarouselPrevious,
-} from '@/components/ui/carousel'
+} from '@/components/ui/Carousel'
 import Link from 'next/link'
 
 export function HomeCarousel({

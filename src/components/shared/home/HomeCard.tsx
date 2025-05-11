@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
-import {Card, CardContent, CardFooter} from '@/components/ui/card';
+import {Card, CardContent, CardFooter} from '@/components/ui/Card';
 import {CardItem} from '@/types';
 
 interface HomeCardProps {
