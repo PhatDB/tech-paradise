@@ -12,9 +12,7 @@ import {
 } from '@/components/ui/Carousel'
 import Link from 'next/link'
 
-export function HomeCarousel({
-                                 items,
-                             }: {
+export function HomeCarousel({items,}: {
     items: {
         image: string
         url: string
@@ -39,7 +37,7 @@ export function HomeCarousel({
                     {items.map((item) => (
                         <CarouselItem key={item.title}>
                             <Link href={item.url}>
-                                <div className='flex aspect-[16/6] items-center justify-center p-6 relative -m-1'>
+                                <div className='flex aspect-[16/6] items-center justify-center p-2 relative -m-1'>
                                     <Image
                                         src={item.image}
                                         alt={item.title}

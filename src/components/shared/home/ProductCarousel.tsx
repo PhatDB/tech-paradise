@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import {ChevronLeft, ChevronRight, Star} from 'lucide-react';
+import {ChevronLeft, ChevronRight} from 'lucide-react';
 import React from 'react';
 import {Product} from '@/types/product';
 
@@ -36,7 +36,6 @@ export function ProductCarousel({products}: ProductCarouselProps) {
                 }}
             >
                 {products.map((pc) => {
-                    // Tính giá mới sau khi giảm giá
                     const newPrice = pc.price - (pc.price * pc.discount) / 100;
 
                     return (
@@ -51,7 +50,6 @@ export function ProductCarousel({products}: ProductCarouselProps) {
                                 />
                                 <h3 className="product-card-title">{pc.productName}</h3>
 
-                                {/* Tách và hiển thị specs */}
                                 <div className="flex flex-wrap gap-1">
                                     {pc.specs.split(',').map((spec, index) => (
                                         <span key={index} className="product-spec-badge">

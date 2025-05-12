@@ -9,7 +9,7 @@ import Search from './Search';
 
 export default function Header() {
     return (
-        <header className="bg-white text-black border-b">
+        <header className="sticky top-0 z-50 bg-white text-black border-b shadow-sm">
             <div className="container mx-auto">
                 <div className="flex items-center justify-between py-2">
                     <Link href="/" className="flex items-center gap-2 header-button text-2xl font-extrabold">
