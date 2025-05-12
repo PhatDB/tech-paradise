@@ -22,7 +22,7 @@ export default function ProductCategoryGrid({categories}: ProductCategoryGridPro
                     >
                         <div className="w-16 h-16 relative mb-2">
                             <Image
-                                src={`/${cat.imageUrl}`}
+                                src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${cat.imageUrl}`}
                                 alt={cat.categoryName}
                                 fill
                                 className="object-contain"

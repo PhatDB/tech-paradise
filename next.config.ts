@@ -1,7 +1,17 @@
-import type { NextConfig } from "next";
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
-const nextConfig: NextConfig = {
-  /* config options here */
-};
+const nextConfig = {
+    images: {
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'localhost',
+                port: '5000',
+                pathname: '/**',
+            },
+        ],
+    },
+}
 
-export default nextConfig;
+module.exports = nextConfig
+

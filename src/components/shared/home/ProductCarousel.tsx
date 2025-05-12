@@ -1,22 +1,22 @@
-'use client';
+'use client'
 
-import Image from 'next/image';
-import Link from 'next/link';
-import {ChevronLeft, ChevronRight} from 'lucide-react';
-import React from 'react';
-import {Product} from '@/types/product';
-
-import {Swiper, SwiperSlide} from 'swiper/react';
-import {Navigation, Autoplay} from 'swiper/modules';
-
-import 'swiper/css';
-import 'swiper/css/navigation';
+import Image from 'next/image'
+import Link from 'next/link'
+import {ChevronLeft, ChevronRight} from 'lucide-react'
+import {Swiper, SwiperSlide} from 'swiper/react'
+import {Navigation, Autoplay} from 'swiper/modules'
+import 'swiper/css'
+import 'swiper/css/navigation'
+import {Product} from '@/types/product'
+import {formatCurrency} from "@/lib/format";
 
 interface ProductCarouselProps {
-    products: Product[];
+    products: Product[]
 }
 
 export function ProductCarousel({products}: ProductCarouselProps) {
+    if (!products?.length) return null
+
     return (
         <div className="relative">
             <Swiper
@@ -24,10 +24,7 @@ export function ProductCarousel({products}: ProductCarouselProps) {
                 spaceBetween={16}
                 slidesPerView={1}
                 loop
-                navigation={{
-                    nextEl: '.swiper-custom-next',
-                    prevEl: '.swiper-custom-prev',
-                }}
+                navigation={{nextEl: '.swiper-custom-next', prevEl: '.swiper-custom-prev'}}
                 autoplay={{delay: 4000}}
                 breakpoints={{
                     640: {slidesPerView: 2},
@@ -35,59 +32,61 @@ export function ProductCarousel({products}: ProductCarouselProps) {
                     1024: {slidesPerView: 5},
                 }}
             >
-                {products.map((pc) => {
-                    const newPrice = pc.price - (pc.price * pc.discount) / 100;
+                {products.map((product) => {
+                    const newPrice = product.price - (product.price * product.discount) / 100
+                    const imageUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${product.imageUrl}`
 
                     return (
-                        <SwiperSlide key={pc.id}>
-                            <Link href="" className="product-card">
-                                <Image
-                                    src={pc.imageUrl}
-                                    alt={pc.productName}
-                                    width={300}
-                                    height={300}
-                                    className="product-card-image"
-                                />
-                                <h3 className="product-card-title">{pc.productName}</h3>
-
-                                <div className="flex flex-wrap gap-1">
-                                    {pc.specs.split(',').map((spec, index) => (
-                                        <span key={index} className="product-spec-badge">
+                        <SwiperSlide key={product.id}>
+                            <Link href={`/products/${product.id}`} className="product-card">
+                                <div className="w-full h-48 relative mb-2">
+                                    <Image
+                                        src={imageUrl}
+                                        alt={product.productName}
+                                        fill
+                                        sizes="(max-width: 768px) 100vw, 20vw"
+                                        className="object-contain rounded-md"
+                                    />
+                                </div>
+                                <h3 className="text-sm font-medium truncate mb-1">{product.productName}</h3>
+                                <div className="flex flex-wrap gap-1 mb-2">
+                                    {product.specs.split(',').slice(0, 3).map((spec, index) => (
+                                        <span key={index} className="bg-gray-100 text-xs px-2 py-1 rounded">
                       {spec.trim()}
                     </span>
                                     ))}
                                 </div>
-
-                                <div className="product-price">
-                  <span className="product-price-old">
-                    {pc.price.toLocaleString()}₫
+                                <div className="text-sm">
+                  <span className="line-through text-gray-400 mr-2">
+                    {formatCurrency(product.price)}
                   </span>
-                                    <span className="product-price-new">
-                    {newPrice.toLocaleString()}₫
+                                    <span className="text-red-600 font-semibold">
+                    {formatCurrency(newPrice)}
                   </span>
-                                    <span className="product-price-discount">
-                    -{pc.discount}%
-                  </span>
+                                    {product.discount > 0 && (
+                                        <span className="ml-2 text-green-600 font-medium">
+                      -{product.discount}%
+                    </span>
+                                    )}
                                 </div>
                             </Link>
                         </SwiperSlide>
-                    );
+                    )
                 })}
             </Swiper>
 
-            {/* Custom arrows */}
-            <div className="swiper-custom-prev absolute top-1/2 -left-2 z-10 transform -translate-y-1/2">
+            <div className="swiper-custom-prev absolute top-1/2 -left-3 z-10 -translate-y-1/2">
                 <div
-                    className="w-9 h-9 bg-white shadow-md rounded-full flex items-center justify-center text-gray-700 hover:bg-gray-100 cursor-pointer">
+                    className="w-8 h-8 bg-white shadow rounded-full flex items-center justify-center hover:bg-gray-100 cursor-pointer">
                     <ChevronLeft size={20}/>
                 </div>
             </div>
-            <div className="swiper-custom-next absolute top-1/2 -right-2 z-10 transform -translate-y-1/2">
+            <div className="swiper-custom-next absolute top-1/2 -right-3 z-10 -translate-y-1/2">
                 <div
-                    className="w-9 h-9 bg-white shadow-md rounded-full flex items-center justify-center text-gray-700 hover:bg-gray-100 cursor-pointer">
+                    className="w-8 h-8 bg-white shadow rounded-full flex items-center justify-center hover:bg-gray-100 cursor-pointer">
                     <ChevronRight size={20}/>
                 </div>
             </div>
         </div>
-    );
+    )
 }

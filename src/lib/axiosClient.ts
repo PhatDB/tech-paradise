@@ -5,7 +5,7 @@ const agent = new https.Agent({rejectUnauthorized: false});
 
 // Axios instance
 const axiosClient = axios.create({
-    baseURL: process.env.API_BASE_URL || 'https://localhost:5000',
+    baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || 'https://localhost:5000',
     timeout: 5000,
     httpsAgent: agent,
     headers: {
