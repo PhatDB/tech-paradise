@@ -11,11 +11,15 @@ import {Product} from '@/types/product'
 import {formatCurrency} from "@/lib/format";
 
 interface ProductCarouselProps {
-    products: Product[]
+    products: Product[];
+    carouselId: string;
 }
 
-export function ProductCarousel({products}: ProductCarouselProps) {
-    if (!products?.length) return null
+export function ProductCarousel({products, carouselId}: ProductCarouselProps) {
+    if (!products?.length) return null;
+
+    const nextClass = `.swiper-next-${carouselId}`;
+    const prevClass = `.swiper-prev-${carouselId}`;
 
     return (
         <div className="relative">
@@ -24,7 +28,7 @@ export function ProductCarousel({products}: ProductCarouselProps) {
                 spaceBetween={16}
                 slidesPerView={1}
                 loop
-                navigation={{nextEl: '.swiper-custom-next', prevEl: '.swiper-custom-prev'}}
+                navigation={{nextEl: nextClass, prevEl: prevClass}}
                 autoplay={{delay: 4000}}
                 breakpoints={{
                     640: {slidesPerView: 2},
@@ -33,8 +37,8 @@ export function ProductCarousel({products}: ProductCarouselProps) {
                 }}
             >
                 {products.map((product) => {
-                    const newPrice = product.price - (product.price * product.discount) / 100
-                    const imageUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${product.imageUrl}`
+                    const newPrice = product.price - (product.price * product.discount) / 100;
+                    const imageUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${product.imageUrl}`;
 
                     return (
                         <SwiperSlide key={product.id}>
@@ -51,42 +55,50 @@ export function ProductCarousel({products}: ProductCarouselProps) {
                                 <h3 className="text-sm font-medium truncate mb-1">{product.productName}</h3>
                                 <div className="flex flex-wrap gap-1 mb-2">
                                     {product.specs.split(',').slice(0, 3).map((spec, index) => (
-                                        <span key={index} className="bg-gray-100 text-xs px-2 py-1 rounded">
-                      {spec.trim()}
-                    </span>
+                                        <span key={index}
+                                              className="bg-gray-100 text-xs px-2 py-1 rounded">{spec.trim()}
+                                        </span>
                                     ))}
                                 </div>
                                 <div className="text-sm">
-                  <span className="line-through text-gray-400 mr-2">
-                    {formatCurrency(product.price)}
-                  </span>
-                                    <span className="text-red-600 font-semibold">
-                    {formatCurrency(newPrice)}
-                  </span>
-                                    {product.discount > 0 && (
-                                        <span className="ml-2 text-green-600 font-medium">
-                      -{product.discount}%
-                    </span>
+                                    {product.discount > 0 ? (
+                                        <>
+                                            <span className="line-through text-gray-400 mr-2">
+                                                {formatCurrency(product.price)}
+                                            </span>
+                                            <span className="text-red-600 font-semibold">
+                                                {formatCurrency(newPrice)}
+                                            </span>
+                                            <span
+                                                className="ml-2 text-red-600 border border-red-600 px-1.5 py-0.5 text-xs rounded font-semibold">
+                                                -{product.discount}%
+                                            </span>
+                                        </>
+                                    ) : (
+                                        <span className="text-black font-semibold">
+                                                {formatCurrency(product.price)}
+                                        </span>
                                     )}
                                 </div>
                             </Link>
                         </SwiperSlide>
-                    )
+                    );
                 })}
             </Swiper>
 
-            <div className="swiper-custom-prev absolute top-1/2 -left-3 z-10 -translate-y-1/2">
+            {/* Custom arrows */}
+            <div className={`swiper-prev-${carouselId} absolute top-1/2 -left-3 z-10 -translate-y-1/2`}>
                 <div
                     className="w-8 h-8 bg-white shadow rounded-full flex items-center justify-center hover:bg-gray-100 cursor-pointer">
                     <ChevronLeft size={20}/>
                 </div>
             </div>
-            <div className="swiper-custom-next absolute top-1/2 -right-3 z-10 -translate-y-1/2">
+            <div className={`swiper-next-${carouselId} absolute top-1/2 -right-3 z-10 -translate-y-1/2`}>
                 <div
                     className="w-8 h-8 bg-white shadow rounded-full flex items-center justify-center hover:bg-gray-100 cursor-pointer">
                     <ChevronRight size={20}/>
                 </div>
             </div>
         </div>
-    )
+    );
 }
