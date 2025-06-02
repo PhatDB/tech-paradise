@@ -8,21 +8,29 @@ import axiosClient from '@/lib/axiosClient';
 import {useState} from 'react';
 
 interface Props {
+    cartId: number;
     item: CartItem;
-    onRemove?: (productId: number) => void;
+    customerId?: number | null;
+    sessionId?: string;
     onQuantityUpdated?: () => void;
 }
 
-export default function CartItemRow({item, onRemove, onQuantityUpdated}: Props) {
+export default function CartItemRow({
+                                        cartId,
+                                        item,
+                                        customerId,
+                                        sessionId,
+                                        onQuantityUpdated,
+                                    }: Props) {
     const [loading, setLoading] = useState(false);
     const image = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${item.imageUrl}`;
-    const customerId = typeof window !== 'undefined' ? parseInt(localStorage.getItem('userId') || '1') : 1;
 
     const handleQuantityChange = async (newQuantity: number) => {
         setLoading(true);
         try {
             await axiosClient.post('/api/v1/cart/add-to-cart', {
                 customerId,
+                sessionId,
                 productId: item.productId,
                 quantity: newQuantity,
             });
@@ -34,10 +42,33 @@ export default function CartItemRow({item, onRemove, onQuantityUpdated}: Props) 
         }
     };
 
+    const handleRemoveClick = async () => {
+        setLoading(true);
+        try {
+            await axiosClient.post('/api/v1/cart/remove-item', {
+                cartId,
+                productId: item.productId,
+                customerId,
+                sessionId,
+            });
+            onQuantityUpdated?.();
+        } catch (error) {
+            console.error('Xóa sản phẩm thất bại:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <tr className="border-t text-sm text-gray-800">
             <td className="p-3 text-center">
-                <Image src={image} alt={item.productName} width={60} height={60} className="object-contain rounded"/>
+                <Image
+                    src={image}
+                    alt={item.productName}
+                    width={60}
+                    height={60}
+                    className="object-contain rounded"
+                />
             </td>
 
             <td className="p-3 font-medium">{item.productName}</td>
@@ -47,10 +78,7 @@ export default function CartItemRow({item, onRemove, onQuantityUpdated}: Props) 
             </td>
 
             <td className="p-3 text-center">
-                <QuantitySelector
-                    value={item.quantity}
-                    onChange={handleQuantityChange}
-                />
+                <QuantitySelector value={item.quantity} onChange={handleQuantityChange}/>
             </td>
 
             <td className="p-3 text-right font-medium">
@@ -59,7 +87,7 @@ export default function CartItemRow({item, onRemove, onQuantityUpdated}: Props) 
 
             <td className="p-3 text-center">
                 <button
-                    onClick={() => onRemove?.(item.productId)}
+                    onClick={handleRemoveClick}
                     className="text-red-500 hover:underline hover:text-red-700 transition text-sm"
                     disabled={loading}
                 >

@@ -1,60 +1,55 @@
 'use client';
 
-import {useEffect, useState} from 'react';
+import {useEffect, useCallback} from 'react';
+import {useSelector, useDispatch} from 'react-redux';
 import axiosClient from '@/lib/axiosClient';
-import {Cart} from '@/types/cart';
+import {RootState} from '@/store';
+import {setCart} from '@/store/cartSlice';
 import CartItemRow from '@/components/cart/CartItemRow';
 import CartSummary from '@/components/cart/CartSummary';
 
+function getSessionId(): string {
+    let sessionId = localStorage.getItem('sessionId');
+    if (!sessionId) {
+        sessionId = crypto.randomUUID();
+        localStorage.setItem('sessionId', sessionId);
+    }
+    return sessionId;
+}
+
 export default function CartPage() {
-    const [cart, setCart] = useState<Cart | null>(null);
-    const [customerId, setCustomerId] = useState<number | null>(null);
-    const [loading, setLoading] = useState(true);
+    const dispatch = useDispatch();
+    const customerId = useSelector((state: RootState) => state.auth.customer?.customerId ?? null);
+    const cart = useSelector((state: RootState) => state.cart.cart);
 
-    useEffect(() => {
-        const storedId = localStorage.getItem('customerId');
-        if (storedId) {
-            setCustomerId(parseInt(storedId));
-        }
-        setLoading(false);
-    }, []);
-
-    const fetchCart = async () => {
-        if (!customerId) return;
-
+    const fetchCart = useCallback(async () => {
         try {
-            const res = await axiosClient.get(`/api/v1/cart/${customerId}`);
-            setCart(res.data);
+            if (customerId) {
+                // Khách đã đăng nhập
+                const res = await axiosClient.get(`/api/v1/cart/${customerId}`);
+                dispatch(setCart(res.data));
+            } else {
+                // Khách vãng lai
+                const sessionId = getSessionId();
+                const res = await axiosClient.get(`/api/v1/cart/session/${sessionId}`);
+                dispatch(setCart(res.data));
+            }
         } catch (err) {
             console.error('Lỗi khi tải giỏ hàng:', err);
+            dispatch(setCart(null));
         }
-    };
-
-    const handleRemove = (productId: number) => {
-        setCart((prev) => {
-            if (!prev) return prev;
-            const updatedItems = prev.cartItems.filter((item) => item.productId !== productId);
-            const newTotal = updatedItems.reduce(
-                (sum, item) => sum + item.discountPrice * item.quantity,
-                0
-            );
-            return {...prev, cartItems: updatedItems, totalPrice: newTotal};
-        });
-    };
+    }, [customerId, dispatch]);
 
     useEffect(() => {
-        if (customerId) fetchCart();
-    }, [customerId]);
+        fetchCart();
+    }, [customerId, fetchCart]);
 
-    if (loading) return <p>Đang tải...</p>;
-
-    if (!customerId) {
+    if (!customerId && !localStorage.getItem('sessionId'))
         return (
-            <div className="container mx-auto p-6 text-center text-red-600 font-semibold text-lg">
-                Bạn chưa đăng nhập. Vui lòng đăng nhập để xem giỏ hàng.
+            <div className="container mx-auto p-6 text-center text-gray-700 font-semibold text-lg">
+                Giỏ hàng của bạn đang trống.
             </div>
         );
-    }
 
     if (!cart) return <p className="text-center">Đang tải giỏ hàng...</p>;
 
@@ -64,9 +59,7 @@ export default function CartPage() {
                 <h1 className="text-xl font-bold mb-4">Giỏ hàng của bạn</h1>
 
                 {cart.cartItems.length === 0 ? (
-                    <div className="text-center py-10 text-gray-600">
-                        <p>Không có sản phẩm nào trong giỏ hàng</p>
-                    </div>
+                    <div className="text-center py-10 text-gray-600">Không có sản phẩm nào trong giỏ hàng</div>
                 ) : (
                     <>
                         <div className="overflow-x-auto rounded border border-gray-200 bg-white">
@@ -85,8 +78,10 @@ export default function CartPage() {
                                 {cart.cartItems.map((item) => (
                                     <CartItemRow
                                         key={item.productId}
+                                        cartId={cart.cartId}
                                         item={item}
-                                        onRemove={handleRemove}
+                                        customerId={customerId}
+                                        sessionId={!customerId ? localStorage.getItem('sessionId') ?? undefined : undefined}
                                         onQuantityUpdated={fetchCart}
                                     />
                                 ))}

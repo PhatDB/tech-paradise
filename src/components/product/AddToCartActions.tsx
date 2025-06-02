@@ -1,10 +1,12 @@
 'use client';
 
-import {useState, useEffect} from 'react';
+import {useState} from 'react';
 import QuantitySelector from './QuantitySelector';
 import axiosClient from '@/lib/axiosClient';
 import Swal from 'sweetalert2';
 import {useRouter} from 'next/navigation';
+import {useSelector} from 'react-redux';
+import {RootState} from '@/store';
 
 interface Props {
     productId: number;
@@ -12,15 +14,8 @@ interface Props {
 
 export default function AddToCartActions({productId}: Props) {
     const [quantity, setQuantity] = useState(1);
-    const [customerId, setCustomerId] = useState<number | null>(null);
+    const customerId = useSelector((state: RootState) => state.auth.customer?.customerId ?? null);
     const router = useRouter();
-
-    useEffect(() => {
-        const storedId = localStorage.getItem('customerId');
-        if (storedId) {
-            setCustomerId(parseInt(storedId));
-        }
-    }, []);
 
     const handleAddToCart = async (redirect = false) => {
         if (!customerId) {
