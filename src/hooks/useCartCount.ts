@@ -16,13 +16,19 @@ export default function useCartCount(customerId?: number) {
         axiosClient
             .get<Cart>(`/api/v1/cart/${customerId}`)
             .then((res) => {
-                const totalQuantity = res.data.cartItems.reduce(
-                    (acc, item) => acc + item.quantity,
-                    0
-                )
-                setCount(totalQuantity)
+                if (res.status === 404) {
+                    setCount(0)
+                } else {
+                    const totalQuantity = res.data.cartItems.reduce(
+                        (acc, item) => acc + item.quantity,
+                        0
+                    )
+                    setCount(totalQuantity)
+                }
             })
-            .catch(() => setCount(0))
+            .catch(() => {
+                setCount(0)
+            })
     }, [customerId])
 
     return count

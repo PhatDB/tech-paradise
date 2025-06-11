@@ -16,11 +16,9 @@ export default function Header() {
                         <Image src="/icons/logo.svg" width={40} height={40} alt={`${APP_NAME} logo`}/>
                         <span className="hidden sm:inline">{APP_NAME}</span>
                     </Link>
-
                     <div className="hidden md:block flex-1 max-w-xl mx-4">
                         <Search/>
                     </div>
-
                     <Menu/>
                 </div>
 
@@ -37,15 +35,6 @@ export default function Header() {
                     <MenuIcon/>
                     Danh mục
                 </Button>
-                {data.headerMenus.map((menu) => (
-                    <Link
-                        href={menu.href}
-                        key={menu.href}
-                        className="header-button text-sm py-1.5 px-3 whitespace-nowrap"
-                    >
-                        {menu.name}
-                    </Link>
-                ))}
             </div>
         </header>
     );

@@ -16,7 +16,7 @@ export default function SidebarMenu({categories}: SidebarMenuProps) {
                 {categories.map((cat) => (
                     <div key={cat.id} className="group relative">
                         <Link
-                            href={`/products?category=${encodeURIComponent(cat.categoryName)}`}
+                            href={`/search?categoryId=${cat.id}`}
                             className="flex justify-between items-center px-4 py-2 hover:bg-red-500 hover:text-white cursor-pointer"
                         >
                             <span className="text-sm font-medium">{cat.categoryName}</span>

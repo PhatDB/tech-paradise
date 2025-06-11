@@ -7,6 +7,7 @@ export interface Customer {
     accessToken: string;
     accessTokenExpires: number;
     refreshToken: string;
+    role: string;
 }
 
 interface AuthState {

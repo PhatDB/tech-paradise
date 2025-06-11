@@ -3,6 +3,8 @@
 import React, {useState} from 'react';
 import {GoogleLogin, CredentialResponse} from '@react-oauth/google';
 import axiosClient from '@/lib/axiosClient';
+import {handleErrorResponse} from '@/lib/errorHandler';
+import Swal from 'sweetalert2';
 
 interface CustomerData {
     accessToken: string;
@@ -16,9 +18,14 @@ interface CustomerData {
 interface LoginPopupProps {
     onClose: () => void;
     onLoginSuccess: (customer: CustomerData) => void;
+    onShowSignupPopup: () => void;
 }
 
-export default function LoginPopup({onClose, onLoginSuccess}: LoginPopupProps) {
+export default function LoginPopup({
+                                       onClose,
+                                       onLoginSuccess,
+                                       onShowSignupPopup,
+                                   }: LoginPopupProps) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -26,7 +33,7 @@ export default function LoginPopup({onClose, onLoginSuccess}: LoginPopupProps) {
 
     const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
         if (!credentialResponse.credential) {
-            alert('Google login thất bại: Không nhận được token');
+            Swal.fire('Đăng nhập thất bại');
             return;
         }
 
@@ -40,25 +47,15 @@ export default function LoginPopup({onClose, onLoginSuccess}: LoginPopupProps) {
             onLoginSuccess(customerData);
             onClose();
         } catch (error: unknown) {
-            let message = 'Đăng nhập Google thất bại, vui lòng thử lại.';
-            if (
-                typeof error === 'object' &&
-                error !== null &&
-                'response' in error &&
-                typeof (error as any).response?.data?.message === 'string'
-            ) {
-                message = (error as any).response.data.message;
-            } else if (error instanceof Error) {
-                message = error.message;
-            }
-            alert(message);
+            const message = handleErrorResponse(error);
+            Swal.fire('Lỗi', message, 'error');
         } finally {
             setLoading(false);
         }
     };
 
     const handleGoogleError = () => {
-        alert('Google login thất bại');
+        Swal.fire('Đăng nhập thất bại');
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -72,7 +69,7 @@ export default function LoginPopup({onClose, onLoginSuccess}: LoginPopupProps) {
             });
 
             if (!res.data) {
-                alert('Đăng nhập thất bại');
+                Swal.fire('Đăng nhập thất bại');
                 setLoading(false);
                 return;
             }
@@ -80,8 +77,9 @@ export default function LoginPopup({onClose, onLoginSuccess}: LoginPopupProps) {
             const customerData: CustomerData = res.data;
             onLoginSuccess(customerData);
             onClose();
-        } catch {
-            alert('Lỗi kết nối, vui lòng thử lại');
+        } catch (error: unknown) {
+            const message = handleErrorResponse(error);
+            Swal.fire('Lỗi', message, 'error');
         } finally {
             setLoading(false);
         }
@@ -156,9 +154,9 @@ export default function LoginPopup({onClose, onLoginSuccess}: LoginPopupProps) {
 
                 <p className="text-center mt-4 text-sm">
                     Bạn chưa có tài khoản?{' '}
-                    <a href="#" className="text-blue-600 hover:underline">
+                    <button onClick={onShowSignupPopup} className="text-blue-600 hover:underline cursor-pointer">
                         Đăng ký ngay!
-                    </a>
+                    </button>
                 </p>
             </div>
         </div>

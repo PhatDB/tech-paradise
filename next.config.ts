@@ -11,6 +11,7 @@ const nextConfig = {
             },
         ],
     },
+    matcher: ['/admin/:path*'],
 }
 
 module.exports = nextConfig

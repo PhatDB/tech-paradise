@@ -13,22 +13,22 @@ const items: PromoItem[] = [
     {
         title: 'Laptop',
         imageUrl: '/images/promo/banner_home_1_master.webp',
-        href: '/products?category=Laptop',
+        href: '/search?q=Laptop',
     },
     {
         title: 'Màn hình',
         imageUrl: '/images/promo/banner_home_2_master.webp',
-        href: '/products?category=Màn hình',
+        href: '/search?q=Màn hình',
     },
     {
         title: 'Gear',
         imageUrl: '/images/promo/banner_home_3_master.webp',
-        href: '/products?category=Gear',
+        href: '/search?q=Gear',
     },
     {
         title: 'Bàn ghế',
         imageUrl: '/images/promo/banner_home_4_master.webp',
-        href: '/products?category=Ghế - Bàn',
+        href: '/search?q=Ghế - Bàn',
     },
 ]
 

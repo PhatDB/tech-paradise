@@ -11,7 +11,7 @@ export default function MegaMenu({subcategories}: MegaMenuProps) {
             {subcategories.map((group) => (
                 <div key={group.id} className="flex flex-col space-y-2">
                     <Link
-                        href={`/products?category=${encodeURIComponent(group.categoryName)}`}
+                        href={`/search?categoryId=${group.id}`}
                         className="text-red-600 font-semibold text-sm hover:underline"
                     >
                         {group.categoryName}
@@ -20,7 +20,7 @@ export default function MegaMenu({subcategories}: MegaMenuProps) {
                         {group.subcategories.map((item) => (
                             <li key={item.id}>
                                 <Link
-                                    href={`/products?category=${encodeURIComponent(item.categoryName)}`}
+                                    href={`/search?categoryId=${encodeURIComponent(item.id)}`}
                                     className="text-sm text-gray-700 hover:text-blue-600 cursor-pointer"
                                 >
                                     {item.categoryName}

@@ -40,7 +40,7 @@ export default function ProductDetailView({product}: Props) {
 
             <ProductSpecs specs={product.productSpecs}/>
             <ProductDescription description={product.description}/>
-            <ProductReviewList reviews={product.productReviews} productId={product.productId}/>
+            <ProductReviewList productId={product.productId}/>
         </div>
     );
 }

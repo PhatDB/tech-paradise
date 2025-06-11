@@ -1,57 +1,76 @@
 'use client';
 
-import {useEffect, useCallback} from 'react';
+import {useEffect, useCallback, useState} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import axiosClient from '@/lib/axiosClient';
 import {RootState} from '@/store';
 import {setCart} from '@/store/cartSlice';
 import CartItemRow from '@/components/cart/CartItemRow';
 import CartSummary from '@/components/cart/CartSummary';
+import {AxiosError} from 'axios';
 
-function getSessionId(): string {
-    let sessionId = localStorage.getItem('sessionId');
-    if (!sessionId) {
-        sessionId = crypto.randomUUID();
-        localStorage.setItem('sessionId', sessionId);
-    }
-    return sessionId;
+function generateSessionId(): string {
+    const id = crypto.randomUUID();
+    localStorage.setItem('sessionId', id);
+    return id;
 }
 
 export default function CartPage() {
     const dispatch = useDispatch();
     const customerId = useSelector((state: RootState) => state.auth.customer?.customerId ?? null);
     const cart = useSelector((state: RootState) => state.cart.cart);
+    const [sessionId, setSessionId] = useState<string | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (!customerId) {
+            const storedSessionId = localStorage.getItem('sessionId');
+            if (storedSessionId) {
+                setSessionId(storedSessionId);
+            } else {
+                setSessionId(generateSessionId());
+            }
+        }
+    }, [customerId]);
 
     const fetchCart = useCallback(async () => {
+        setLoading(true);
         try {
             if (customerId) {
-                // Khách đã đăng nhập
                 const res = await axiosClient.get(`/api/v1/cart/${customerId}`);
                 dispatch(setCart(res.data));
-            } else {
-                // Khách vãng lai
-                const sessionId = getSessionId();
+            } else if (sessionId) {
                 const res = await axiosClient.get(`/api/v1/cart/session/${sessionId}`);
                 dispatch(setCart(res.data));
+            } else {
+                dispatch(setCart(null));
             }
         } catch (err) {
-            console.error('Lỗi khi tải giỏ hàng:', err);
-            dispatch(setCart(null));
+            if (err instanceof AxiosError && err.response?.status === 404) {
+                dispatch(setCart(null));
+            } else {
+                console.error('Lỗi khi tải giỏ hàng:', err);
+                dispatch(setCart(null));
+            }
+        } finally {
+            setLoading(false);
         }
-    }, [customerId, dispatch]);
+    }, [customerId, sessionId, dispatch]);
 
     useEffect(() => {
         fetchCart();
     }, [customerId, fetchCart]);
 
-    if (!customerId && !localStorage.getItem('sessionId'))
+    if (loading) return <p className="text-center py-10">Đang tải giỏ hàng...</p>;
+
+    if (!customerId && !sessionId)
         return (
             <div className="container mx-auto p-6 text-center text-gray-700 font-semibold text-lg">
                 Giỏ hàng của bạn đang trống.
             </div>
         );
 
-    if (!cart) return <p className="text-center">Đang tải giỏ hàng...</p>;
+    if (!cart) return <p className="text-center py-10">Giỏ hàng của bạn đang trống.</p>;
 
     return (
         <div className="container mx-auto p-3">
@@ -81,7 +100,7 @@ export default function CartPage() {
                                         cartId={cart.cartId}
                                         item={item}
                                         customerId={customerId}
-                                        sessionId={!customerId ? localStorage.getItem('sessionId') ?? undefined : undefined}
+                                        sessionId={!customerId ? sessionId ?? undefined : undefined}
                                         onQuantityUpdated={fetchCart}
                                     />
                                 ))}

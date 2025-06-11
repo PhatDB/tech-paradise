@@ -16,7 +16,7 @@ export default function ProductCategoryGrid({categories}: ProductCategoryGridPro
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-6">
                 {categories.map((cat) => (
                     <Link
-                        href={`/products?category=${encodeURIComponent(cat.categoryName)}`}
+                        href={`/search?categoryId=${cat.id}`}
                         key={cat.categoryName}
                         className="flex flex-col items-center text-center hover:text-red-600 transition"
                     >
